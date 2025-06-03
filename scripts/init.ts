@@ -4,16 +4,17 @@ import { Role } from '@prisma/client';
 
 export async function initDatabase() {
   const adminEmail = 'admin@example.com';
+  const adminPassword = '123456';
 
   const admin = await userService.createUserIfNotExists({
     name: 'admin',
     email: adminEmail,
-    password: '123456',
+    password: adminPassword,
     role: Role.ADMIN,
     mobile: '13800138000',
   });
 
-  console.log(`✅ 默认管理员账号已就绪: ${admin.email}`);
+  console.log(`✅ 默认管理员账号已就绪: ${adminEmail},密码: ${adminPassword}`);
 }
 
 
