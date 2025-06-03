@@ -1,4 +1,5 @@
 import { Session } from "next-auth";
+
 import Header from "./header";
 
 export function InnerLayout({

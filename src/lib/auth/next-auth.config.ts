@@ -1,7 +1,8 @@
+import { User as PrismaUser } from "@prisma/client";
 import { NextAuthOptions, Session, User } from "next-auth";
 import { JWT } from "next-auth/jwt";
+
 import { credentialsProvider } from "@/lib/providers/credentials";
-import { User as PrismaUser } from "@prisma/client";
 
 declare module "next-auth" {
   interface Session {

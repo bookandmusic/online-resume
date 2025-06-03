@@ -1,7 +1,8 @@
 "use client";
 
-import { HelloData } from "@/types/helloMessage";
 import { useEffect, useState } from "react";
+
+import { HelloData } from "@/types/helloMessage";
 
 export function useHelloMessage() {
   const [data, setData] = useState<HelloData | null>(null);

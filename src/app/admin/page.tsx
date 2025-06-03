@@ -1,5 +1,6 @@
 // app/admin/page.tsx
 import { getServerSession } from "next-auth";
+
 import { authOptions } from "@/lib/auth/next-auth.config";
 
 export default async function AdminPage() {

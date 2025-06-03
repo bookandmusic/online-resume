@@ -1,6 +1,7 @@
 "use client";
+import { CircleAlert,LoaderIcon } from "lucide-react";
+
 import { useHelloMessage } from "@/hooks/useHelloMessage";
-import { LoaderIcon, CircleAlert } from "lucide-react";
 
 export function HelloMessage() {
   const { data, loading, error } = useHelloMessage();

@@ -1,21 +1,21 @@
 "use client";
 
-import { Session } from "next-auth";
-import { Avatar, AvatarFallback } from "./ui/avatar";
+import { Moon, Sun } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { Session } from "next-auth";
+import { signOut } from "next-auth/react";
+import { useTheme } from "next-themes";
+import * as React from "react";
+
+import { Button } from "@/components/ui/button";
+
+import { Avatar, AvatarFallback } from "./ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { signOut } from "next-auth/react";
-
-import * as React from "react";
-import { Moon, Sun } from "lucide-react";
-import { useTheme } from "next-themes";
-
-import { Button } from "@/components/ui/button";
 
 export function ModeToggle() {
   const { setTheme } = useTheme();

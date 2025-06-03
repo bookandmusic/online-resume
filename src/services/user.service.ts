@@ -1,7 +1,8 @@
 // services/user.service.ts
-import { prisma } from "@/lib/prisma";
-import bcrypt from "bcryptjs";
 import { Role } from "@prisma/client";
+import bcrypt from "bcryptjs";
+
+import { prisma } from "@/lib/prisma";
 
 export const userService = {
   async findByEmail(key: string) {
