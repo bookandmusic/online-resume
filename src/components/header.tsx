@@ -18,29 +18,14 @@ import {
 } from "./ui/dropdown-menu";
 
 export function ModeToggle() {
-  const { setTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon">
-          <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
-          <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
-          <span className="sr-only">Toggle theme</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme("light")}>
-          Light
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}>
-          Dark
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>
-          System
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <Button variant="secondary" size="icon" onClick={() => setTheme(theme === "light" ? "dark" : "light")}> 
+      {
+        theme === "light" ? <Moon /> : <Sun />
+      }
+    </Button>
   );
 }
 
@@ -62,6 +47,7 @@ export function UserProfile({ session }: { session: Session | null }) {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={()=>{router.push("/admin")}}>后台</DropdownMenuItem>
         <DropdownMenuItem onClick={handleLogout}>退出</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -73,12 +59,14 @@ export function UserProfile({ session }: { session: Session | null }) {
 }
 
 export default function Header({ session }: { session: Session | null }) {
+  const router = useRouter();
   return (
     <>
       {/* 顶部导航栏 */}
       <header className="flex justify-between items-center px-6 py-4 border-b border-gray-300 dark:border-gray-700">
         {/* 左侧标题 */}
-        <h1 className="text-xl font-bold">在线简历</h1>
+        
+        <Button variant="link" onClick={() => router.push("/")}><h1 className="text-xl font-bold">在线简历</h1></Button>
 
         {/* 右侧区域：ModeToggle 和 UserProfile */}
         <div className="flex items-center space-x-4">

@@ -86,7 +86,7 @@ export default function LoginForm() {
         <Button type="submit" className={`w-full ${
             loading
               ? "bg-gray-400 cursor-not-allowed"
-              : "bg-blue-600 hover:bg-blue-700"
+              : ""
           }`}
           onClick={handleLogin}
           disabled={loading}

@@ -9,7 +9,7 @@ export function HelloMessage() {
     <div>
       {loading && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
-          <LoaderIcon className="animate-spin text-green-500" size={128} />
+          <LoaderIcon className="animate-spin text-orange-500" size={128} />
         </div>
       )}
       {error && (
