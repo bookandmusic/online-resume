@@ -1,4 +1,3 @@
-// services/user.service.ts
 import { Role } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
@@ -6,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 
 export const userService = {
   async findByEmail(key: string) {
-    const user =  prisma.user.findFirst({
+    const user = prisma.user.findFirst({
       where: {
         OR: [{ email: key }, { name: key }, { mobile: key }],
       },

@@ -74,7 +74,7 @@ const resumeSchema = z.object({
       degree: z.string().min(1, "请输入学位"),
       school: z.string().min(1, "请输入学校"),
       duration: z.string().min(1, "请输入时间"),
-    })
+    }),
   ),
   experiences: z.array(
     z.object({
@@ -82,9 +82,9 @@ const resumeSchema = z.object({
       company: z.string().min(1, "请输入公司"),
       duration: z.string().min(1, "请输入时间"),
       responsibilities: z.array(
-        z.object({ value: z.string().min(1, "请输入职责") })
+        z.object({ value: z.string().min(1, "请输入职责") }),
       ),
-    })
+    }),
   ),
   projects: z.array(
     z.object({
@@ -92,7 +92,7 @@ const resumeSchema = z.object({
       duration: z.string().min(1, "请输入时间"),
       description: z.string().min(1, "请输入描述"),
       highlights: z.array(z.object({ value: z.string().min(1, "请输入亮点") })),
-    })
+    }),
   ),
 });
 
@@ -127,7 +127,16 @@ export function ResumeForm({
         )}
 
         {(
-          ["name", "email", "phone", "location", "website", "summary"] as const
+          [
+            "name",
+            "email",
+            "phone",
+            "location",
+            "website",
+            "summary",
+            "job",
+            "money",
+          ] as const
         ).map((fieldName) => (
           <FormField
             key={fieldName}
@@ -139,18 +148,18 @@ export function ResumeForm({
                   {fieldName === "summary"
                     ? "简介"
                     : fieldName === "name"
-                    ? "姓名"
-                    : fieldName === "email"
-                    ? "邮箱"
-                    : fieldName === "location"
-                    ? "地址"
-                    : fieldName === "website"
-                    ? "网站"
-                    : fieldName === "job"
-                    ? "求职意向"
-                    : fieldName === "money"
-                    ? "期望薪资"
-                    : "电话"}
+                      ? "姓名"
+                      : fieldName === "email"
+                        ? "邮箱"
+                        : fieldName === "location"
+                          ? "地址"
+                          : fieldName === "website"
+                            ? "网站"
+                            : fieldName === "job"
+                              ? "求职意向"
+                              : fieldName === "money"
+                                ? "期望薪资"
+                                : "电话"}
                 </FormLabel>
                 <FormControl>
                   {fieldName === "summary" ? (
@@ -186,8 +195,8 @@ export function ResumeForm({
                         {field.name.includes("degree")
                           ? "学位"
                           : field.name.includes("school")
-                          ? "学校"
-                          : "时间"}
+                            ? "学校"
+                            : "时间"}
                       </FormLabel>
                       <FormControl>
                         <Input {...field} />
@@ -242,8 +251,8 @@ export function ResumeForm({
                         {field.name.includes("position")
                           ? "职位"
                           : field.name.includes("company")
-                          ? "公司"
-                          : "时间"}
+                            ? "公司"
+                            : "时间"}
                       </FormLabel>
                       <FormControl>
                         <Input {...field} />
@@ -255,7 +264,7 @@ export function ResumeForm({
               ))}
               {form.watch(`experiences.${i}.responsibilities`).map((_, j) => {
                 const resps = form.getValues(
-                  `experiences.${i}.responsibilities`
+                  `experiences.${i}.responsibilities`,
                 );
                 return (
                   <div key={j} className="flex items-center gap-2">
@@ -279,7 +288,7 @@ export function ResumeForm({
                                   updated.splice(j, 1);
                                   form.setValue(
                                     `experiences.${i}.responsibilities`,
-                                    updated
+                                    updated,
                                   );
                                 }}
                                 disabled={resps.length === 1}
@@ -295,10 +304,10 @@ export function ResumeForm({
                                     `experiences.${i}.responsibilities`,
                                     [
                                       ...form.getValues(
-                                        `experiences.${i}.responsibilities`
+                                        `experiences.${i}.responsibilities`,
                                       ),
                                       { value: "" },
-                                    ]
+                                    ],
                                   )
                                 }
                               >
@@ -407,7 +416,7 @@ export function ResumeForm({
                                   updated.splice(j, 1);
                                   form.setValue(
                                     `projects.${i}.highlights`,
-                                    updated
+                                    updated,
                                   );
                                 }}
                                 disabled={items.length === 1}
@@ -421,7 +430,7 @@ export function ResumeForm({
                                 onClick={() =>
                                   form.setValue(`projects.${i}.highlights`, [
                                     ...form.getValues(
-                                      `projects.${i}.highlights`
+                                      `projects.${i}.highlights`,
                                     ),
                                     { value: "" },
                                   ])

@@ -1,4 +1,3 @@
-// init.ts
 import { userService } from '../src/services/user.service';
 import { Role } from '@prisma/client';
 

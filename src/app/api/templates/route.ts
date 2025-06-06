@@ -1,41 +1,48 @@
-// app/api/templates/route.ts
-import fs from 'fs/promises'
-import { NextResponse } from 'next/server'
-import path from 'path'
+import fs from "fs/promises";
+import { NextResponse } from "next/server";
+import path from "path";
 
 export async function GET() {
-  const templatesDir = path.join(process.cwd(), 'public/templates')
+  const templatesDir = path.join(process.cwd(), "public/templates");
 
-  let entries: string[]
+  let entries: string[];
   try {
-    entries = await fs.readdir(templatesDir)
+    entries = await fs.readdir(templatesDir);
   } catch {
-    return NextResponse.json({ error: 'Failed to read templates directory' }, { status: 500 })
+    return NextResponse.json(
+      { error: "Failed to read templates directory" },
+      { status: 500 },
+    );
   }
 
-  const templates = []
+  const templates = [];
 
   for (const entry of entries) {
-    const templatePath = path.join(templatesDir, entry)
-    const stat = await fs.stat(templatePath)
-    if (!stat.isDirectory()) continue
+    const templatePath = path.join(templatesDir, entry);
+    const stat = await fs.stat(templatePath);
+    if (!stat.isDirectory()) continue;
 
-    const indexPath = path.join(templatePath, 'index.html')
+    const indexPath = path.join(templatePath, "index.html");
     try {
-      await fs.access(indexPath)
+      await fs.access(indexPath);
     } catch {
-      continue // skip if index.html not found
+      continue; // skip if index.html not found
     }
 
     // 查找封面图
-    const coverCandidates = ['cover.png', 'cover.jpg', 'cover.jpeg', 'cover.webp']
-    let cover = ''
+    const coverCandidates = [
+      "cover.png",
+      "cover.jpg",
+      "cover.jpeg",
+      "cover.webp",
+    ];
+    let cover = "";
     for (const name of coverCandidates) {
-      const filePath = path.join(templatePath, name)
+      const filePath = path.join(templatePath, name);
       try {
-        await fs.access(filePath)
-        cover = `/templates/${entry}/${name}`
-        break
+        await fs.access(filePath);
+        cover = `/templates/${entry}/${name}`;
+        break;
       } catch {}
     }
 
@@ -43,9 +50,9 @@ export async function GET() {
       id: entry,
       name: entry, // 目前用文件夹名作为名称
       previewUrl: `/templates/${entry}`, // 页面地址
-      coverUrl: cover || '/default-cover.png', // 封面图路径
-    })
+      coverUrl: cover || "/default-cover.png", // 封面图路径
+    });
   }
 
-  return NextResponse.json(templates)
+  return NextResponse.json(templates);
 }

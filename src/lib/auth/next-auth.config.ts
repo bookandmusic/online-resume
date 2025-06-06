@@ -26,13 +26,7 @@ export const authOptions: NextAuthOptions = {
     maxAge: 60 * 60 * 24 * 30, // 同步会话时长
   },
   callbacks: {
-    async jwt({
-      token,
-      user,
-    }: {
-      token: JWT;
-      user: User;
-    }) {
+    async jwt({ token, user }: { token: JWT; user: User }) {
       if (user) {
         const prismaUser = user as PrismaUser;
         token.id = prismaUser.id;

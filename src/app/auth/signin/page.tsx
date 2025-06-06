@@ -10,7 +10,5 @@ export default async function SignInPage() {
   if (session) {
     redirect("/admin");
   }
-  return (
-    <LoginForm />
-  );
+  return <LoginForm />;
 }

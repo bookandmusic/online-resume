@@ -1,27 +1,28 @@
-// 修改导入方式为默认导入
-import CredentialsProvider from 'next-auth/providers/credentials'; 
+import CredentialsProvider from "next-auth/providers/credentials";
 
-// 原业务逻辑保持不变
-import { userService } from '@/services/user.service';
+import { userService } from "@/services/user.service";
 
 export const credentialsProvider = CredentialsProvider({
-  name: 'Credentials',
+  name: "Credentials",
   credentials: {
-    email: { label: 'Email', type: 'text' },
-    password: { label: 'Password', type: 'password' }
+    email: { label: "Email", type: "text" },
+    password: { label: "Password", type: "password" },
   },
   async authorize(credentials) {
     if (!credentials?.email || !credentials?.password) {
-      throw new Error('Missing credentials');
+      throw new Error("Missing credentials");
     }
 
     const user = await userService.findByEmail(credentials.email);
-    if (!user || !await userService.validatePassword(user, credentials.password)) {
-      throw new Error('Invalid credentials');
+    if (
+      !user ||
+      !(await userService.validatePassword(user, credentials.password))
+    ) {
+      throw new Error("Invalid credentials");
     }
 
     if (!user.isActive) {
-      throw new Error('User is inactive');
+      throw new Error("User is inactive");
     }
 
     return {
@@ -29,7 +30,7 @@ export const credentialsProvider = CredentialsProvider({
       email: user.email,
       name: user.name,
       mobile: user.mobile,
-      role: user.role
+      role: user.role,
     };
-  }
+  },
 });

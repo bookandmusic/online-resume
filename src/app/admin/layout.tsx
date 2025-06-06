@@ -1,4 +1,3 @@
-// app/admin/layout.tsx
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
@@ -7,24 +6,32 @@ import React from "react";
 import Header from "@/components/header";
 import { authOptions } from "@/lib/auth/next-auth.config";
 
-export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+export default async function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const session = await getServerSession(authOptions);
 
   if (!session) {
-   redirect("/auth/signin");
+    redirect("/auth/signin");
   }
 
   return (
     <div className="min-h-screen flex flex-col">
       {/* 顶部导航栏 */}
-      <Header session={ session} />
+      <Header session={session} />
 
       <div className="flex flex-1">
         {/* 侧边栏 */}
         <aside className="w-64 bg-gray-200 dark:bg-gray-900 p-4">
           <nav className="flex flex-col space-y-2">
-            <Link href="/admin" className="hover:underline">仪表盘</Link>
-            <Link href="/admin/test" className="hover:underline">测试页</Link>
+            <Link href="/admin" className="hover:underline">
+              仪表盘
+            </Link>
+            <Link href="/admin/test" className="hover:underline">
+              测试页
+            </Link>
           </nav>
         </aside>
 

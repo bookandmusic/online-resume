@@ -17,7 +17,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -46,16 +45,19 @@ export default function LoginForm() {
         <CardTitle>在线简历</CardTitle>
         <CardDescription>输入个人账户登录后台系统</CardDescription>
         <CardAction>
-          <Button variant="link" onClick={() => router.push("/")}>回到首页</Button>
+          <Button variant="link" onClick={() => router.push("/")}>
+            回到首页
+          </Button>
         </CardAction>
       </CardHeader>
       <CardContent>
         <form>
           <div className="flex flex-col gap-6">
-          {error && (<div className="grid gap-2">
-            <p className="text-red-500 text-sm mb-4 text-center">{error}</p>
-            </div>
-          )}
+            {error && (
+              <div className="grid gap-2">
+                <p className="text-red-500 text-sm mb-4 text-center">{error}</p>
+              </div>
+            )}
             <div className="grid gap-2">
               <Label htmlFor="email">用户名</Label>
               <Input
@@ -83,15 +85,15 @@ export default function LoginForm() {
         </form>
       </CardContent>
       <CardFooter className="flex-col gap-2">
-        <Button type="submit" className={`w-full ${
-            loading
-              ? "bg-gray-400 cursor-not-allowed"
-              : ""
+        <Button
+          type="submit"
+          className={`w-full ${
+            loading ? "bg-gray-400 cursor-not-allowed" : ""
           }`}
           onClick={handleLogin}
           disabled={loading}
         >
-           {loading ? "登录中..." : "登录"}
+          {loading ? "登录中..." : "登录"}
         </Button>
       </CardFooter>
     </Card>

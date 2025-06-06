@@ -11,7 +11,6 @@ export function InnerLayout({
 }) {
   return (
     <div className="min-h-screen flex flex-col">
-
       {/* 导航栏 */}
       <Header session={session} />
 
@@ -20,7 +19,7 @@ export function InnerLayout({
 
       {/* 底部页脚 */}
       <footer className="text-center py-4 border-t border-gray-300 dark:border-gray-700">
-        © 2025 | 精品简历模板 | 版权所有 
+        © 2025 | 精品简历模板 | 版权所有
       </footer>
     </div>
   );

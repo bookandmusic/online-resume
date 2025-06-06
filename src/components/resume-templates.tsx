@@ -33,7 +33,9 @@ export default function ResumeTemplates() {
                 </div>
               )}
             </div>
-            <div className="p-2 text-center font-medium dark:bg-gray-400">{t.name}</div>
+            <div className="p-2 text-center font-medium dark:bg-gray-400">
+              {t.name}
+            </div>
           </Link>
         ))}
       </div>
