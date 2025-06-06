@@ -5,7 +5,7 @@ import path from "path";
 
 export async function GET(
   request: Request,
-  { params }: { params: { name: string } },
+  { params }: { params: Promise<Record<string, string>> },
 ) {
   const { name } = await params;
   const indexPath = path.join(
