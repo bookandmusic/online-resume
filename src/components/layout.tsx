@@ -16,11 +16,11 @@ export function InnerLayout({
       <Header session={session} />
 
       {/* 中间内容 */}
-      <main className="flex-grow px-6 py-8">{children}</main>
+      <main className="flex-1 flex">{children}</main>
 
       {/* 底部页脚 */}
       <footer className="text-center py-4 border-t border-gray-300 dark:border-gray-700">
-        © 2025 你的公司名称
+        © 2025 | 精品简历模板 | 版权所有 
       </footer>
     </div>
   );

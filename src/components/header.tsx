@@ -1,6 +1,6 @@
 "use client";
 
-import { Moon, Sun } from "lucide-react";
+import { SunMoon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Session } from "next-auth";
 import { signOut } from "next-auth/react";
@@ -21,10 +21,12 @@ export function ModeToggle() {
   const { theme, setTheme } = useTheme();
 
   return (
-    <Button variant="secondary" size="icon" onClick={() => setTheme(theme === "light" ? "dark" : "light")}> 
-      {
-        theme === "light" ? <Moon /> : <Sun />
-      }
+    <Button
+      variant="outline"
+      size="icon"
+      onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+    >
+      <SunMoon className="h-16 w-16" />
     </Button>
   );
 }
@@ -47,7 +49,13 @@ export function UserProfile({ session }: { session: Session | null }) {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={()=>{router.push("/admin")}}>后台</DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => {
+            router.push("/admin");
+          }}
+        >
+          后台
+        </DropdownMenuItem>
         <DropdownMenuItem onClick={handleLogout}>退出</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -65,8 +73,10 @@ export default function Header({ session }: { session: Session | null }) {
       {/* 顶部导航栏 */}
       <header className="flex justify-between items-center px-6 py-4 border-b border-gray-300 dark:border-gray-700">
         {/* 左侧标题 */}
-        
-        <Button variant="link" onClick={() => router.push("/")}><h1 className="text-xl font-bold">在线简历</h1></Button>
+
+        <Button variant="link" onClick={() => router.push("/")}>
+          <h1 className="text-xl font-bold">在线简历</h1>
+        </Button>
 
         {/* 右侧区域：ModeToggle 和 UserProfile */}
         <div className="flex items-center space-x-4">

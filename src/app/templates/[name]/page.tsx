@@ -1,14 +1,20 @@
 import { getServerSession } from "next-auth";
 
 import { InnerLayout } from "@/components/layout";
-import ResumeTemplates from "@/components/resume-templates";
+import TemplateDetail from "@/components/resume";
 import { authOptions } from "@/lib/auth/next-auth.config";
 
-export default async function Home() {
+export default async function TemplatePreviewPage({
+  params,
+}: {
+  params: Promise<{ name: string }>;
+}) {
+  const { name } = await params;
   const session = await getServerSession(authOptions);
+
   return (
     <InnerLayout session={session}>
-      <ResumeTemplates />
+      <TemplateDetail templateName={name} />
     </InnerLayout>
   );
 }

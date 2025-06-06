@@ -18,6 +18,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "在线简历",
   description: "一个在线简历预览工具，支持多种简历模板",
+  icons: {
+    icon: "favicon.svg",
+  },
 };
 
 
@@ -28,11 +31,11 @@ export default async function RootLayout({
 }>) {
   
   return (
-    <html lang="zh-CN" suppressHydrationWarning >
+    <html lang="zh-CN" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div>
+        <div className="w-full h-full">
           <ThemeProvider
             attribute="class"
             defaultTheme="dark"

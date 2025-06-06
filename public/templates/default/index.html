@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{name}} 的简历</title>
+    <style>
+      body {
+        font-family: "Helvetica Neue", Arial, sans-serif;
+        background: #f7f7f7;
+        margin: 0;
+        padding: 0;
+        color: #333;
+      }
+
+      .resume {
+        margin: auto;
+        background: white;
+        padding: 24px;
+        border-radius: 12px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        box-sizing: border-box;
+      }
+
+      /* 针对小屏幕优化布局 */
+      @media (max-width: 768px) {
+        .resume {
+          padding: 16px;
+          border-radius: 0;
+          box-shadow: none;
+        }
+      }
+
+      h1 {
+        font-size: 32px;
+        margin-bottom: 8px;
+        color: #2c3e50;
+      }
+      h2 {
+        font-size: 20px;
+        margin: 24px 0 8px;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 4px;
+        color: #34495e;
+      }
+      p,
+      li {
+        line-height: 1.6;
+      }
+      .contact {
+        margin-bottom: 20px;
+      }
+      .section {
+        margin-bottom: 24px;
+      }
+      .experience,
+      .education {
+        margin-left: 16px;
+      }
+      ul {
+        padding-left: 20px;
+      }
+      .project {
+        margin-bottom: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="resume">
+      <div class="section">
+        <h2>基本信息</h2>
+        <div class="contact">
+          <ul>
+            <li>👤 {{ name }}</li>
+            <li>📧 {{email}}</li>
+            <li>📱 {{phone}}</li>
+            <li>📍 {{location}}</li>
+            <li>🖥️ {{website}}</li>
+            <li>💼 {{job}}</li>
+            <li>💰 {{ money }}</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>个人简介</h2>
+        <p>{{summary}}</p>
+      </div>
+      <div class="section">
+        <h2>教育背景</h2>
+        <div class="education">
+          {{#each education}}
+          <p><strong>{{degree}}</strong> - {{school}}（{{duration}}）</p>
+          {{/each}}
+        </div>
+      </div>
+      <div class="section">
+        <h2>技能特长</h2>
+        <ul>
+          {{#each skills}}
+          <li>{{this}}</li>
+          {{/each}}
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2>工作经历</h2>
+        <div class="experience">
+          {{#each experiences}}
+          <p><strong>{{position}}</strong> - {{company}}（{{duration}}）</p>
+          <ul>
+            {{#each responsibilities}}
+            <li>{{this.value}}</li>
+            {{/each}}
+          </ul>
+          {{/each}}
+        </div>
+      </div>
+      <div class="section">
+        <h2>项目经验</h2>
+        <div class="projects">
+          {{#each projects}}
+          <div class="project">
+            <p><strong>{{title}}</strong>（{{duration}}）</p>
+            <p>{{description}}</p>
+            <ul>
+              {{#each highlights}}
+              <li>{{this.value}}</li>
+              {{/each}}
+            </ul>
+          </div>
+          {{/each}}
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
