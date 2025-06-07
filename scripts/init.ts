@@ -1,15 +1,14 @@
 import { userService } from '../src/services/user.service';
-import { Role } from '@prisma/client';
 
 export async function initDatabase() {
   const adminEmail = 'admin@example.com';
   const adminPassword = '123456';
 
-  const admin = await userService.createUserIfNotExists({
+  await userService.createUserIfNotExists({
     name: 'admin',
     email: adminEmail,
     password: adminPassword,
-    role: Role.ADMIN,
+    role: "ADMIN",
     mobile: '13800138000',
   });
 

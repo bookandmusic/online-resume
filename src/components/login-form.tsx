@@ -90,7 +90,7 @@ export default function LoginForm() {
           className={`w-full ${
             loading ? "bg-gray-400 cursor-not-allowed" : ""
           }`}
-          onClick={handleLogin}
+          onClick={() => void handleLogin()}
           disabled={loading}
         >
           {loading ? "登录中..." : "登录"}

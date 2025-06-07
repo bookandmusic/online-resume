@@ -25,8 +25,18 @@ export async function GET(
   // 替换资源相对路径（JS、CSS、图片等）
   const baseUrl = `/templates/${name}`;
   const fixedHtml = templateHtml.replace(
-    /(href|src)=["'](?!https?:\/\/|\/\/|\/)([^"']+)["']/g,
-    (_, attr, relPath) => `${attr}="${baseUrl}/${relPath}"`,
+    // 解释：
+    // 1. 捕获 href= 或 src=
+    // 2. 使用 ["'] 引号
+    // 3. 跳过以 http(s):, //, / 开头的路径
+    // 4. 跳过以 {{ 开头的 Handlebars 模板变量
+    // 5. 匹配相对路径（支持 ./、../、xxx）
+    /(href|src)=["']((?!https?:\/\/|\/\/|\/|\{\{)[^"']+)["']/g,
+    (_, attr, relPath) => {
+      const normalized = new URL(relPath, `https://dummy.com${baseUrl}/`)
+        .pathname;
+      return `${attr}="${normalized}"`;
+    },
   );
   const detail = {
     name: name,

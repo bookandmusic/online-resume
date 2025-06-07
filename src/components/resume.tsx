@@ -1,11 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import Handlebars from "handlebars";
 import { Minus, Plus } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import React from "react";
 import { useFieldArray, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -30,71 +31,45 @@ import {
 } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
 import { useTemplateHtml } from "@/hooks/useTemplates";
-import { defaultResumeData } from "@/lib/default-resume-data";
+import {
+  baseInfoFields,
+  baseInfoFieldsMap,
+  defaultResumeData,
+  educationFields,
+  experienceFields,
+  getEducationFieldLabel,
+  getEducationNamePath,
+  getExperienceFieldLabel,
+  getExperienceName,
+  getProjectFieldLabel,
+  getProjectFieldNamePath,
+  getProjectHighlightPath,
+  getResponsibilityNamePath,
+  projectField,
+  resumeSchema,
+  textareas,
+} from "@/lib/resume";
+import {
+  BaseInfoField,
+  EducationField,
+  ExperienceField,
+  ProjectField,
+  ResumeData,
+} from "@/types/resume";
 
-export type ResumeData = {
-  name: string;
-  email: string;
-  phone: string;
-  location: string;
-  website: string;
-  job: string;
-  money: string;
-  summary: string;
-  education: {
-    degree: string;
-    school: string;
-    duration: string;
-  }[];
-  experiences: {
-    position: string;
-    company: string;
-    duration: string;
-    responsibilities: { value: string }[];
-  }[];
-  projects: {
-    title: string;
-    duration: string;
-    description: string;
-    highlights: { value: string }[];
-  }[];
-};
-
-const resumeSchema = z.object({
-  name: z.string().min(1, "请输入姓名"),
-  email: z.string().email("请输入正确的邮箱"),
-  phone: z.string().min(1, "请输入电话"),
-  location: z.string().min(1, "请输入地址"),
-  website: z.string().url("请输入正确的网址"),
-  money: z.string().min(1, "请输入求职意向"),
-  job: z.string().min(1, "请输入期望职位"),
-  summary: z.string().min(1, "请输入简介"),
-  education: z.array(
-    z.object({
-      degree: z.string().min(1, "请输入学位"),
-      school: z.string().min(1, "请输入学校"),
-      duration: z.string().min(1, "请输入时间"),
-    }),
-  ),
-  experiences: z.array(
-    z.object({
-      position: z.string().min(1, "请输入职位"),
-      company: z.string().min(1, "请输入公司"),
-      duration: z.string().min(1, "请输入时间"),
-      responsibilities: z.array(
-        z.object({ value: z.string().min(1, "请输入职责") }),
-      ),
-    }),
-  ),
-  projects: z.array(
-    z.object({
-      title: z.string().min(1, "请输入标题"),
-      duration: z.string().min(1, "请输入时间"),
-      description: z.string().min(1, "请输入描述"),
-      highlights: z.array(z.object({ value: z.string().min(1, "请输入亮点") })),
-    }),
-  ),
-});
+function AutoInput({
+  keyName,
+  field,
+}: {
+  keyName: EducationField | ExperienceField | BaseInfoField | ProjectField;
+  field: React.ComponentProps<"input"> | React.ComponentProps<"textarea">;
+}) {
+  if (textareas.includes(keyName)) {
+    return <Textarea {...(field as React.ComponentProps<"textarea">)} />;
+  } else {
+    return <Input {...(field as React.ComponentProps<"input">)} />;
+  }
+}
 
 export function ResumeForm({
   data,
@@ -125,48 +100,51 @@ export function ResumeForm({
         {Object.keys(form.formState.errors).length > 0 && (
           <div className="text-red-500 text-sm">请检查表单中的错误</div>
         )}
+        <FormField
+          control={form.control}
+          name="avatar"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>头像</FormLabel>
+              <FormControl>
+                <div className="flex flex-col items-start gap-2">
+                  {field.value && (
+                    <Image
+                      src={field.value}
+                      alt="头像预览"
+                      width={96} // 24*4
+                      height={96}
+                      className="rounded-full object-cover border"
+                    />
+                  )}
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const url = URL.createObjectURL(file);
+                        form.setValue("avatar", url);
+                      }
+                    }}
+                  />
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-        {(
-          [
-            "name",
-            "email",
-            "phone",
-            "location",
-            "website",
-            "summary",
-            "job",
-            "money",
-          ] as const
-        ).map((fieldName) => (
+        {baseInfoFields.map((fieldName) => (
           <FormField
             key={fieldName}
             control={form.control}
             name={fieldName}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>
-                  {fieldName === "summary"
-                    ? "简介"
-                    : fieldName === "name"
-                      ? "姓名"
-                      : fieldName === "email"
-                        ? "邮箱"
-                        : fieldName === "location"
-                          ? "地址"
-                          : fieldName === "website"
-                            ? "网站"
-                            : fieldName === "job"
-                              ? "求职意向"
-                              : fieldName === "money"
-                                ? "期望薪资"
-                                : "电话"}
-                </FormLabel>
+                <FormLabel>{baseInfoFieldsMap[fieldName]}</FormLabel>
                 <FormControl>
-                  {fieldName === "summary" ? (
-                    <Textarea {...field} />
-                  ) : (
-                    <Input {...field} />
-                  )}
+                  <AutoInput keyName={fieldName} field={field}></AutoInput>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -179,25 +157,14 @@ export function ResumeForm({
           <h2 className="text-lg font-semibold">教育经历</h2>
           {educationArray.fields.map((item, index) => (
             <div key={item.id} className="space-y-2 border p-2 rounded">
-              {(["degree", "school", "duration"] as const).map((field) => (
+              {educationFields.map((key) => (
                 <FormField
-                  key={field}
+                  key={key}
                   control={form.control}
-                  name={
-                    `education.${index}.${field}` as `education.${number}.${
-                      | "degree"
-                      | "school"
-                      | "duration"}`
-                  }
+                  name={getEducationNamePath(index, key)}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>
-                        {field.name.includes("degree")
-                          ? "学位"
-                          : field.name.includes("school")
-                            ? "学校"
-                            : "时间"}
-                      </FormLabel>
+                      <FormLabel>{getEducationFieldLabel(key)}</FormLabel>
                       <FormControl>
                         <Input {...field} />
                       </FormControl>
@@ -225,6 +192,7 @@ export function ResumeForm({
                       degree: "",
                       school: "",
                       duration: "",
+                      major: "",
                     })
                   }
                 >
@@ -240,20 +208,14 @@ export function ResumeForm({
           <h2 className="text-lg font-semibold">工作经历</h2>
           {expArray.fields.map((exp, i) => (
             <div key={exp.id} className="space-y-2 border p-2 rounded">
-              {(["position", "company", "duration"] as const).map((field) => (
+              {experienceFields.map((key) => (
                 <FormField
-                  key={field}
+                  key={key}
                   control={form.control}
-                  name={`experiences.${i}.${field}` as const}
+                  name={getExperienceName(i, key)}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>
-                        {field.name.includes("position")
-                          ? "职位"
-                          : field.name.includes("company")
-                            ? "公司"
-                            : "时间"}
-                      </FormLabel>
+                      <FormLabel>{getExperienceFieldLabel(key)}</FormLabel>
                       <FormControl>
                         <Input {...field} />
                       </FormControl>
@@ -270,9 +232,7 @@ export function ResumeForm({
                   <div key={j} className="flex items-center gap-2">
                     <FormField
                       control={form.control}
-                      name={
-                        `experiences.${i}.responsibilities.${j}.value` as const
-                      }
+                      name={getResponsibilityNamePath(i, j)}
                       render={({ field }) => (
                         <FormItem className="flex-1">
                           <FormLabel>职责 {j + 1}</FormLabel>
@@ -359,48 +319,29 @@ export function ResumeForm({
           <h2 className="text-lg font-semibold">项目经历</h2>
           {projArray.fields.map((proj, i) => (
             <div key={proj.id} className="space-y-2 border p-2 rounded">
-              {(["title", "duration"] as const).map((field) => (
+              {projectField.map((key) => (
                 <FormField
-                  key={field}
+                  key={key}
                   control={form.control}
-                  name={
-                    `projects.${i}.${field}` as
-                      | `projects.${number}.title`
-                      | `projects.${number}.duration`
-                  }
+                  name={getProjectFieldNamePath(i, key)}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>
-                        {field.name.includes("title") ? "标题" : "时间"}
-                      </FormLabel>
+                      <FormLabel>{getProjectFieldLabel(key)}</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <AutoInput keyName={key} field={field}></AutoInput>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               ))}
-              <FormField
-                control={form.control}
-                name={`projects.${i}.description` as const}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>描述</FormLabel>
-                    <FormControl>
-                      <Textarea {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               {form.watch(`projects.${i}.highlights`).map((_, j) => {
                 const items = form.getValues(`projects.${i}.highlights`);
                 return (
                   <div key={j} className="flex items-center gap-2">
                     <FormField
                       control={form.control}
-                      name={`projects.${i}.highlights.${j}.value` as const}
+                      name={getProjectHighlightPath(i, j)}
                       render={({ field }) => (
                         <FormItem className="flex-1">
                           <FormLabel>亮点 {j + 1}</FormLabel>
@@ -490,19 +431,11 @@ export default function TemplateDetail({
 }) {
   const [resumeData, setResumeData] = useState<ResumeData>(defaultResumeData);
   const form = useForm<ResumeData>({
-    // 使用 useForm 创建 form 实例
     resolver: zodResolver(resumeSchema),
     defaultValues: resumeData,
   });
 
-  const [renderedHtml, setRenderedHtml] = useState<string>("");
-  const { templateHtml } = useTemplateHtml(templateName);
-  const template = Handlebars.compile(templateHtml);
-  const rendered = template(resumeData);
-
-  useEffect(() => {
-    setRenderedHtml(rendered);
-  }, [rendered]);
+  const { renderedHtml } = useTemplateHtml(templateName, resumeData);
 
   const sheetCloseRef = useRef<HTMLButtonElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -512,21 +445,21 @@ export default function TemplateDetail({
       const doc = iframeRef.current.contentDocument;
       if (!doc) return;
 
-      // 清空内容
       doc.open();
+      doc.write(renderedHtml);
       doc.close();
-
-      // 构建 <html>
-      const htmlEl = doc.documentElement;
-      htmlEl.innerHTML = renderedHtml;
     }
   }, [renderedHtml]);
 
   const handlePreview = () => {
-    form.handleSubmit((data) => {
-      setResumeData(data);
-      sheetCloseRef.current?.click();
-    })();
+    form
+      .handleSubmit((data) => {
+        setResumeData(data);
+        sheetCloseRef.current?.click();
+      })()
+      .catch(() => {
+        toast.error("用户信息保存失败，请检查输入");
+      });
   };
 
   const handleDownloadPdf = () => {
@@ -546,7 +479,6 @@ export default function TemplateDetail({
             title="Resume Preview"
           />
         </div>
-
         <div className="mt-4 space-y-4">
           <div className="flex justify-end gap-2">
             <Sheet>

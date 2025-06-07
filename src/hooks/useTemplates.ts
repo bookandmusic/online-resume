@@ -1,6 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import Handlebars from "handlebars";
+import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
+
+import { ResumeData } from "@/types/resume";
 
 import { usePagination } from "./usePagination";
 
@@ -16,8 +20,19 @@ export function useTemplates(pageSize = 6) {
 
   useEffect(() => {
     fetch("/api/templates")
-      .then((res) => res.json())
-      .then(setTemplates);
+      .then((res) => {
+        if (!res.ok) {
+          // ❌ 主动抛出错误，终止 .then 链
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then(setTemplates)
+      .catch((error) => {
+        toast.error("获取简历模板失败", {
+          description: error.message,
+        });
+      });
   }, []);
 
   const { page, setPage, totalPages, currentItems } = usePagination(
@@ -34,18 +49,47 @@ export function useTemplates(pageSize = 6) {
   };
 }
 
-export function useTemplateHtml(templateName: string) {
+export function useRenderHtml(templateHtml: string, resumeData: ResumeData) {
+  return useMemo(() => {
+    if (!templateHtml) return "";
+    try {
+      const template = Handlebars.compile(templateHtml);
+      const html = template(resumeData);
+      return html;
+    } catch {
+      return "";
+    }
+  }, [templateHtml, resumeData]);
+}
+
+export function useTemplateHtml(templateName: string, resumeData: ResumeData) {
   const [templateHtml, setTemplateHtml] = useState<string>("");
 
   useEffect(() => {
+    let cancelled = false;
     fetch(`/api/templates/${templateName}`)
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        return res.json();
+      })
       .then((data) => {
-        setTemplateHtml(data.html);
+        if (!cancelled) setTemplateHtml(data.html);
+      })
+      .catch((error) => {
+        toast.error("获取简历模板失败", {
+          description: error.message,
+        });
+        if (!cancelled) setTemplateHtml("");
       });
+
+    return () => {
+      cancelled = true;
+    };
   }, [templateName]);
 
+  const renderedHtml = useRenderHtml(templateHtml, resumeData);
+
   return {
-    templateHtml,
+    renderedHtml,
   };
 }

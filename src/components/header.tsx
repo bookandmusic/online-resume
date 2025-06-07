@@ -56,7 +56,9 @@ export function UserProfile({ session }: { session: Session | null }) {
         >
           后台
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleLogout}>退出</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => void handleLogout()}>
+          退出
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   ) : (
